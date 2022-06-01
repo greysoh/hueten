@@ -17,6 +17,10 @@ const createWindow = () => {
 
   win.loadFile(join(__dirname + "./app/pages/index.html"));
 
+  ipcMain.on("setWindowSize", (event, width, height) => {
+      win.setSize(width, height);
+  });
+
   ipcMain.on("ready", function () {
     win.show();
   });

@@ -1,5 +1,13 @@
 /* Variables */
 body {
     --background-color: #1A2933;
+    --titlebar-height: 32px;
 }
-  
+
+#main {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - var(--titlebar-height));
+    top: var(--titlebar-height);
+    left: 0px;
+}
