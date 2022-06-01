@@ -3,8 +3,8 @@ const homedir = require('os').homedir();
 const { join } = require("path");
 
 module.exports = {
-    async init() {
-        this.db = new Database(join(homedir, "hue.db"));
+    async init(readOnly) {
+        this.db = new Database(join(homedir, "hue.db"), readOnly || false);
         await this.db.serialize();
     }
 }

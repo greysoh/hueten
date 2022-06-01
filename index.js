@@ -15,7 +15,7 @@ const createWindow = () => {
 
   win.hide();
 
-  win.loadFile(join(__dirname + "./app/pages/index.html"));
+  win.loadFile(join(__dirname + "./app/main/index.html"));
 
   ipcMain.on("setWindowSize", (event, width, height) => {
       win.setSize(width, height);
