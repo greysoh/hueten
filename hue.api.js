@@ -5,21 +5,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = {
+module.exports = class HueAPI {
     /**
      * Initializes the Hue API
      * @param {string} deviceType Device type you want to appear as
      */
-    async init(deviceType) {
+    constructor(deviceType) {
         This.deviceType = deviceType;
         This.bridge = null;
         This.username = null;
-    },
+    }
 
     /**
      * Connection settings
      */
-    connection: {
+    connection = {
         /**
          * Gets the bridge URL, then sets it.
          * @returns {string} URL of the bridge
@@ -42,12 +42,12 @@ module.exports = {
         async setBridgeURL(url) {
             This.bridge = url;
         }
-    },
+    }
 
     /**
      * Authentication settings
      */
-    auth: {
+    auth = {
         /**
          * Generates a username for the bridge
          * @returns {string} Username for the bridge

@@ -10,7 +10,7 @@ const createWindow = () => {
     }
   });
 
-  win.loadFile("./app/pages/index.html");
+  win.loadFile(join(__dirname + "./app/pages/index.html"));
 };
 
 app.on("window-all-closed", () => {
