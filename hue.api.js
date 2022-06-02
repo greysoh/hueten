@@ -39,7 +39,7 @@ module.exports = class HueAPI {
          * Sets the bridge URL
          * @param {string} url URL of the bridge
         */
-        async setBridgeURL(url) {
+        setBridgeURL(url) {
             This.bridge = url;
         }
     }

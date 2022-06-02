@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { join } = require("path");
-const conf = require("./conf.api");
 
 const createWindow = () => {
   let windowConfig = {
@@ -40,6 +39,11 @@ const createWindow = () => {
   ipcMain.on("close", function () {
     win.close();
   });
+
+  ipcMain.on("restart", function () {
+      app.relaunch();
+      app.exit();
+  })
 
   win.onBeforeUnload = () => {
       win.removeAllListeners();

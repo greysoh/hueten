@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const titlebar = require("./main/titlebar");
+const setup = require("./pages/setup.js");
 
 const conf = require("../conf.api");
 
@@ -27,6 +28,8 @@ async function loadPage(page) {
     }
 }
 
+contextBridge.exposeInMainWorld("loadHTML", loadPage);
+
 async function refreshTitled() {
     while (true) {
         document.getElementById("window-title").getElementsByTagName("span")[0].innerText = document.title;
@@ -37,15 +40,17 @@ async function refreshTitled() {
 addEventListener("DOMContentLoaded", async function() {
     titlebar();
     refreshTitled();
-    document.title = "Hueten Setup";
 
-    await conf.init(true);
+    await conf.init();
 
     if (await conf.db.get("username") == null) {
-        ipcRenderer.send("setWindowSize", 1200, 720)
+        document.title = "Hueten Setup";
+        ipcRenderer.send("setWindowSize", 1200, 720);
+        await loadPage("setup.html");
+        setup(conf.db);
+    } else {
+        await loadPage("index.html");
     }
-
-    await loadPage("index.html");
     
     ipcRenderer.send("ready");
 })
