@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 const titlebar = require("./main/titlebar");
 const setup = require("./pages/setup.js");
+const mainui = require("./pages/mainui.js");
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,13 +40,14 @@ addEventListener("DOMContentLoaded", async function() {
     titlebar();
     refreshTitled();
 
-    if (localStorage.getItem("username") == null) {
+    if (localStorage.getItem("bridgeUrl") == null || localStorage.getItem("username") == null) {
         document.title = "Hueten Setup";
         ipcRenderer.send("setWindowSize", 1200, 720);
         await loadPage("setup.html");
         setup();
     } else {
-        await loadPage("index.html");
+        await loadPage("mainui.html");
+        mainui();
     }
     
     ipcRenderer.send("ready");

@@ -20,6 +20,12 @@ module.exports = async function() {
         await localStorage.setItem("bridgeUrl", await hue.connection.getBridgeURL());
     }
 
+    document.getElementsByClassName("text")[0].innerText = "Waiting for 'e' key to be pressed (if needed).";
+
+    if (isBridgeURLOverwritten) document.getElementsByClassName("text")[0].innerText = "Please wait..."
+
+    await sleep(1000);
+
     if (isBridgeURLOverwritten) {
         let input = document.createElement("input");
         input.type = "text";
