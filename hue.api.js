@@ -17,6 +17,14 @@ module.exports = class HueAPI {
     }
 
     /**
+     * Returns contents of "this". 
+     * @returns {object} This
+     */
+    This() {
+        return This;
+    }
+
+    /**
      * Connection settings
      */
     connection = {
