@@ -1,7 +1,10 @@
 /* Variables */
 body {
+    --white: #c2c2c2;
     --background-color: #202020;
     --titlebar-height: 32px;
+
+    user-select: none;
 }
 
 #main {

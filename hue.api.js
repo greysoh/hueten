@@ -94,4 +94,29 @@ module.exports = class HueAPI {
             This.username = username;
         }
     }
+
+    /**
+     * Basic lighting
+     */
+    lighting = {
+        async getGroups() {
+            if (!This.bridge) throw("No bridge defined, please run connection.getBridgeURL() or connection.setBridgeURL(url) first");
+            if (!This.username) throw("No username defined, please run auth.generateUsername() or auth.setUsername(name) first");
+
+            let data = await axios.get(This.bridge + "/api/" + This.username + "/groups");
+
+            return data.data;
+        },
+
+        async getRooms() {
+            const data = await this.getGroups();
+            let arr = [];
+
+            for (let i in data) {
+                if (data[i].type == "Room") arr.push(data[i]);
+            }
+
+            return arr;
+        }
+    }
 }

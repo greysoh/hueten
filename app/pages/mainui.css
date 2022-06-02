@@ -1,0 +1,32 @@
+body {
+    --roomRadius: 6px;
+}
+
+.room {
+    position: absolute;
+    width: calc(100% - 30px);
+    height: 70px;
+    left: 15px;
+    top: 3px;
+    background-color: var(--white);
+    border-radius: var(--roomRadius);
+    color: black;
+}
+
+.roomText {
+    position: absolute;
+    font-weight: 500;
+    top: 23px;
+    left: 3px;
+}
+
+.roomSlider {
+    -webkit-appearance: none;
+    position: absolute;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    top: 45px;
+    border-radius: 0 0 var(--roomRadius) var(--roomRadius);
+}
