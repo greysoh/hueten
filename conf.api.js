@@ -1,7 +1,3 @@
-const Database = require("@creamy-dev/1udb");
-const homedir = require('os').homedir();
-const { join } = require("path");
-
 // Migrating to localStorage
 
 module.exports = {
