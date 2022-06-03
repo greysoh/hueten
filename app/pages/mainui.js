@@ -15,11 +15,12 @@ module.exports = async function() {
 
     while (true) {
         let roomID = 0;
-
         let rooms = await hue.lighting.getRooms();
+
         let roomList = document.getElementById("rooms");
         let newHTML = "";
 
+        
         for (i of rooms) {
             let template = roomTemplate;
             
@@ -27,16 +28,18 @@ module.exports = async function() {
             template = template.replaceAll("{{brightness}}", i.action.bri / 2.55);
             template = template.replaceAll("{{roomID}}", "hi_" + roomID);
             template = template.replaceAll("{{rawRoomID}}", roomID);
+
+            if (i.action.on) template = template.replaceAll("{{checked}}", "checked");
+            template = template.replaceAll("{{checked}}", "");
             
             template = template.replaceAll("{{weDidTheMonsterMath}}", 70 * roomID + (5 * roomID) + 5);
 
             newHTML += template;
-
             roomID++;
         }
 
         roomList.innerHTML = newHTML;
 
-        await sleep(100000);
+        await sleep(1000);
     }
 }
