@@ -104,8 +104,14 @@ module.exports = class HueAPI {
             if (!This.username) throw("No username defined, please run auth.generateUsername() or auth.setUsername(name) first");
 
             let data = await axios.get(This.bridge + "/api/" + This.username + "/groups");
+            let newData = {};
 
-            return data.data;
+            for (let i in data.data) {
+                newData[i] = data.data[i];
+                newData[i].id = i;
+            }
+
+            return newData;
         },
 
         async getRooms() {
@@ -117,6 +123,18 @@ module.exports = class HueAPI {
             }
 
             return arr;
+        },
+
+        /**
+         * Runs room actions specified
+         * @param {number} roomID ID of room
+         * @param {JSON} action action body 
+         */
+        async roomAction(roomID, action) {
+            if (!This.bridge) throw("No bridge defined, please run connection.getBridgeURL() or connection.setBridgeURL(url) first");
+            if (!This.username) throw("No username defined, please run auth.generateUsername() or auth.setUsername(name) first");
+
+            await axios.put(This.bridge + "/api/" + This.username + "/groups/" + roomID + "/action", action);
         }
     }
 }
