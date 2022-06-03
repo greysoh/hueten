@@ -48,6 +48,7 @@ addEventListener("DOMContentLoaded", async function() {
         try {
             setup();
         } catch(e) {
+            ipcRenderer.send("ready");
             alert("Setup failed.");
         }
     } else {
@@ -56,6 +57,7 @@ addEventListener("DOMContentLoaded", async function() {
         try {
             mainui();
         } catch (e) {
+            ipcRenderer.send("ready");
             alert("MainUI Failed");
         }
     }
