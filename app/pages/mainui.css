@@ -18,7 +18,9 @@ body {
     position: absolute;
     width: calc(100% - 35px);
     height: 25px;
-    background: #d3d3d3;
+    background: #383838;
+    opacity: 0.5;
+    backdrop-filter: blur(8px);
     outline: none;
     top: 45px;
     border-radius: 0 0 0 var(--roomRadius);
