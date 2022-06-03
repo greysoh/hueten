@@ -37,8 +37,8 @@ module.exports = async function() {
                 let brightnessSlider = i.getElementsByClassName("roomSlider")[0]; // Local copy of slider
                 let brightnessSliderOld = elem.getElementsByClassName("roomSlider")[0]; // Old copy of slider
 
-                if (brightnessSlider.value != brightnessSliderOld.value) {
-                    roomActions.bri = Math.round(parseInt(brightnessSlider.value) * 2.55);
+                if (brightnessSlider.value != brightnessSliderOld.value) { // If the brightness slier is modified,
+                    roomActions.bri = Math.round(parseInt(brightnessSlider.value) * 2.55); // we set the brightness to the slider value * 2.55
                 }
 
                 // 2nd part - Detect toggle switch stuff

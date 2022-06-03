@@ -21,7 +21,7 @@ body {
     background: #d3d3d3;
     outline: none;
     top: 45px;
-    border-radius: 0 0 var(--roomRadius) 0;
+    border-radius: 0 0 0 var(--roomRadius);
 }
 
 .checkboxPositioner {
