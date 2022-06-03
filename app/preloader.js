@@ -44,10 +44,20 @@ addEventListener("DOMContentLoaded", async function() {
         document.title = "Hueten Setup";
         ipcRenderer.send("setWindowSize", 1200, 720);
         await loadPage("setup.html");
-        setup();
+        
+        try {
+            setup();
+        } catch(e) {
+            alert("Setup failed.");
+        }
     } else {
         await loadPage("mainui.html");
-        mainui();
+
+        try {
+            mainui();
+        } catch (e) {
+            alert("MainUI Failed");
+        }
     }
     
     ipcRenderer.send("ready");

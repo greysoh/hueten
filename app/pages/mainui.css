@@ -3,14 +3,7 @@ body {
 }
 
 .room {
-    position: absolute;
-    width: calc(100% - 30px);
-    height: 70px;
-    left: 15px;
-    top: 3px;
-    background-color: var(--white);
-    border-radius: var(--roomRadius);
-    color: black;
+    /* Moved to room.html, because CSS was stubborn */
 }
 
 .roomText {
@@ -23,10 +16,16 @@ body {
 .roomSlider {
     -webkit-appearance: none;
     position: absolute;
-    width: 100%;
+    width: calc(100% - 35px);
     height: 25px;
     background: #d3d3d3;
     outline: none;
     top: 45px;
-    border-radius: 0 0 var(--roomRadius) var(--roomRadius);
+    border-radius: 0 0 var(--roomRadius) 0;
+}
+
+.checkboxPositioner {
+    position: absolute;
+    top: 45px;
+    left: calc(100% - 35px);
 }

@@ -1,16 +1,31 @@
 /* Variables */
 body {
-    --white: #c2c2c2;
-    --background-color: #202020;
-    --titlebar-height: 32px;
+  --white: #c2c2c2;
+  --background-color: #202020;
+  --titlebar-height: 32px;
 
-    user-select: none;
+  user-select: none;
 }
 
 #main {
-    position: absolute;
-    width: 100%;
-    height: calc(100% - var(--titlebar-height));
-    top: var(--titlebar-height);
-    left: 0px;
+  position: absolute;
+  width: 100%;
+  height: calc(100% - var(--titlebar-height));
+  top: var(--titlebar-height);
+  left: 0px;
+  overflow-y: overlay;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--white);
+  border-radius: 20px;
+  border: 4px solid var(--background-color);
 }

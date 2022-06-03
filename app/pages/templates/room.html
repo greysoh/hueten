@@ -1,0 +1,22 @@
+<style>
+    #{{roomID}} {
+        position: absolute;
+        width: calc(100% - 31px);
+        height: 70px;
+        left: 15px;
+        top: {{weDidTheMonsterMath}}px;
+        background-color: var(--white);
+        border-radius: var(--roomRadius);
+        color: black;
+    }
+</style>
+
+<div id="{{roomID}}">
+    <span class="roomText">{{name}}</span>
+    <input type="range" min="1" max="100" value="{{brightness}}" class="roomSlider">
+    
+    <label class="switch checkboxPositioner">
+        <input type="checkbox">
+        <span class="slider"></span>
+    </label>
+</div>
