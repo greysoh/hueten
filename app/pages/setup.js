@@ -3,6 +3,9 @@ const hue = new HueAPI("Hueten");
 const { contextBridge, ipcRenderer } = require("electron");
 let isBridgeURLOverwritten = false;
 
+const package = require("../../package.json");
+const buildVer = package.version;
+
 document.addEventListener("keypress", function(e) {
     if (e.key.toLowerCase() == "e") {
         isBridgeURLOverwritten = true;
@@ -14,6 +17,8 @@ function sleep(ms) {
 }
 
 module.exports = async function() {
+    document.getElementsByClassName("attrib")[0].innerHTML = `v${buildVer} | Alpha | ` + document.getElementsByClassName("attrib")[0].innerHTML;
+    
     if (localStorage.getItem("bridgeUrl") != null) {
         hue.connection.setBridgeURL(localStorage.getItem("bridgeUrl"));
     } else {
