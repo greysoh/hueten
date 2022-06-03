@@ -71,53 +71,65 @@ module.exports = async function() {
 
             let template = roomTemplate;
             
+            // Filling in template
             template = template.replaceAll("{{name}}", rooms[i].name);
             template = template.replaceAll("{{brightness}}", rooms[i].action.bri / 2.55);
             template = template.replaceAll("{{roomID}}", "hi_" + i);
             template = template.replaceAll("{{rawRoomID}}", roomID);
 
-            if (rooms[i].action.on) template = template.replaceAll("{{checked}}", "checked");
-            template = template.replaceAll("{{checked}}", "");
+            if (rooms[i].action.on) template = template.replaceAll("{{checked}}", "checked"); // If the room is on, we check the checkbox
+            template = template.replaceAll("{{checked}}", ""); // else, we uncheck it
             
-            template = template.replaceAll("{{weDidTheMonsterMath}}", 70 * roomID + (5 * roomID) + 5);
+            template = template.replaceAll("{{weDidTheMonsterMath}}", 70 * roomID + (5 * roomID) + 5); // Some math that CSS was too stupid to do
 
             // Calculate light gradient
-            if (rooms[i].lights.length == 1) {
-                if (rooms[i].action.xy != undefined) {
+            if (rooms[i].lights.length == 1) { // If there is only 1 light in the room,
+                if (rooms[i].action.xy != undefined) { // and the room has a color,
+                    // we calculate the actual color,
                     let rgb = colorConverter.xyBriToRgb(rooms[i].action.xy[0], rooms[i].action.xy[1], rooms[i].action.bri);
 
+                    // and set the color.
                     template = template.replaceAll("{{backgroundColor}}", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
-                } else {
+                } else { // and the room doesn't have a color,
+                    // we set the color to white,
                     let rgb = colorConverter.xyBriToRgb(0.35, 0.35, rooms[i].action.bri);
 
+                    // and set the color.
                     template = template.replaceAll("{{backgroundColor}}", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
                 }
-            } else {
+            } else { // If there is more than 1 light in the room,
                 let rgbArr = [];
 
-                for (j of rooms[i].lights) {
-                    const lightInfo = await hue.lighting.lightSearch(lights, j);
+                for (j of rooms[i].lights) { // we get all the lights in the room,
+                    const lightInfo = await hue.lighting.lightSearch(lights, j); // search for the light,
 
-                    if (lightInfo.state.xy != undefined) {
+                    if (lightInfo.state.xy != undefined) { // and if it has color,
+                        // we calculate the actual color,
                         const rgb = colorConverter.xyBriToRgb(lightInfo.state.xy[0], lightInfo.state.xy[1], lightInfo.state.bri);
     
+                        // and push it to an array.
                         rgbArr.push([rgb.r, rgb.g, rgb.b]);
-                    } else {
+                    } else { // and if it doesn't have color,
+                        // we set the color to white,
                         let rgb = colorConverter.xyBriToRgb(0.35, 0.35, lightInfo.state.bri);
     
+                        // and push it to an array.
                         rgbArr.push([rgb.r, rgb.g, rgb.b]);
                     }
                 }
 
+                // Then, we make a gradient of all the colors in the array,
                 let linearStr = "linear-gradient(90deg,";
                 
+                // and for all of them, we add a color to the gradient.
                 for (i of rgbArr) {
                     linearStr += "rgb(" + i[0] + "," + i[1] + "," + i[2] + "),";
                 }
 
-                linearStr = linearStr.substring(0, linearStr.length - 1); // Remove last comma
-                linearStr += ")"; // Close gradient
+                linearStr = linearStr.substring(0, linearStr.length - 1); // We remove the last comma,
+                linearStr += ")"; // and close the gradient.
 
+                // Then, we set the background color.
                 template = template.replaceAll("{{backgroundColor}}", linearStr);
             }
 
