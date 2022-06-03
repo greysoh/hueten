@@ -1,11 +1,14 @@
 const fs = require("fs");
 const { join } = require("path");
+const { ipcRenderer } = require("electron");
+
 const HueAPI = require("../../hue.api");
 const hue = new HueAPI("Hueten");
 
 const colorConverter = require("cie-rgb-color-converter");
 
 let newElements = [];
+let isReady = false;
 
 const roomTemplate = fs.readFileSync(join(__dirname, "./templates/room.html"), "utf-8");
 
@@ -136,6 +139,11 @@ module.exports = async function() {
 
         roomList.innerHTML = newHTML;
 
-        await sleep(500);
+        if (!isReady) {
+            isReady = true;
+            ipcRenderer.send("ready");
+        }
+
+        await sleep(1000);
     }
 }

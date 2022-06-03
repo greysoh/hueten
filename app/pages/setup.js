@@ -18,6 +18,7 @@ function sleep(ms) {
 
 module.exports = async function() {
     document.getElementsByClassName("attrib")[0].innerHTML = `v${buildVer} | Alpha | ` + document.getElementsByClassName("attrib")[0].innerHTML;
+    ipcRenderer.send("ready");
     
     if (localStorage.getItem("bridgeUrl") != null) {
         hue.connection.setBridgeURL(localStorage.getItem("bridgeUrl"));
