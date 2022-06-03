@@ -3,6 +3,8 @@ const { join } = require("path");
 const HueAPI = require("../../hue.api");
 const hue = new HueAPI("Hueten");
 
+const colorConverter = require("cie-rgb-color-converter");
+
 let newElements = [];
 
 const roomTemplate = fs.readFileSync(join(__dirname, "./templates/room.html"), "utf-8");
@@ -62,6 +64,8 @@ module.exports = async function() {
         rooms = await hue.lighting.getGroups();
         newElements = [];
 
+        let lights = await hue.lighting.getLights();
+
         for (i in rooms) {
             if (rooms[i].type != "Room") continue;
 
@@ -76,6 +80,46 @@ module.exports = async function() {
             template = template.replaceAll("{{checked}}", "");
             
             template = template.replaceAll("{{weDidTheMonsterMath}}", 70 * roomID + (5 * roomID) + 5);
+
+            // Calculate light gradient
+            if (rooms[i].lights.length == 1) {
+                if (rooms[i].action.xy != undefined) {
+                    let rgb = colorConverter.xyBriToRgb(rooms[i].action.xy[0], rooms[i].action.xy[1], rooms[i].action.bri);
+
+                    template = template.replaceAll("{{backgroundColor}}", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
+                } else {
+                    let rgb = colorConverter.xyBriToRgb(0.35, 0.35, rooms[i].action.bri);
+
+                    template = template.replaceAll("{{backgroundColor}}", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
+                }
+            } else {
+                let rgbArr = [];
+
+                for (j of rooms[i].lights) {
+                    const lightInfo = await hue.lighting.lightSearch(lights, j);
+
+                    if (lightInfo.state.xy != undefined) {
+                        const rgb = colorConverter.xyBriToRgb(lightInfo.state.xy[0], lightInfo.state.xy[1], lightInfo.state.bri);
+    
+                        rgbArr.push([rgb.r, rgb.g, rgb.b]);
+                    } else {
+                        let rgb = colorConverter.xyBriToRgb(0.35, 0.35, lightInfo.state.bri);
+    
+                        rgbArr.push([rgb.r, rgb.g, rgb.b]);
+                    }
+                }
+
+                let linearStr = "linear-gradient(90deg,";
+                
+                for (i of rgbArr) {
+                    linearStr += "rgb(" + i[0] + "," + i[1] + "," + i[2] + "),";
+                }
+
+                linearStr = linearStr.substring(0, linearStr.length - 1); // Remove last comma
+                linearStr += ")"; // Close gradient
+
+                template = template.replaceAll("{{backgroundColor}}", linearStr);
+            }
 
             newHTML += template;
 

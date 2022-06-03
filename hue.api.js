@@ -125,6 +125,41 @@ module.exports = class HueAPI {
             return arr;
         },
 
+        async getLight(id) {
+            if (!This.bridge) throw("No bridge defined, please run connection.getBridgeURL() or connection.setBridgeURL(url) first");
+            if (!This.username) throw("No username defined, please run auth.generateUsername() or auth.setUsername(name) first");
+
+            let data = await axios.get(This.bridge + "/api/" + This.username + "/lights/" + id);
+            return data.data;
+        },
+
+        async getLights() {
+            if (!This.bridge) throw("No bridge defined, please run connection.getBridgeURL() or connection.setBridgeURL(url) first");
+            if (!This.username) throw("No username defined, please run auth.generateUsername() or auth.setUsername(name) first");
+
+            let data = await axios.get(This.bridge + "/api/" + This.username + "/lights");
+            let newData = {};
+
+            for (let i in data.data) {
+                newData[i] = data.data[i];
+                newData[i].id = i;
+            }
+
+            return newData;
+        },
+
+        /**
+         * Finds a light by id, after calling getLights().
+         * Similar to calling getLight(id), but can reduce API requests which makes it go brr
+         * @param {object} lights getLights()
+         * @param {number} id ID of the light
+         */
+        async lightSearch(lights, id) {
+            for (let i in lights) {
+                if (lights[i].id == id) return lights[i];
+            }
+        },
+
         /**
          * Runs room actions specified
          * @param {number} roomID ID of room
