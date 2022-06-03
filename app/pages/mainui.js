@@ -98,32 +98,24 @@ module.exports = async function() {
                     template = template.replaceAll("{{backgroundColor}}", "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + ")");
                 }
             } else { // If there is more than 1 light in the room,
-                let rgbArr = [];
+                let linearStr = "linear-gradient(90deg,"; // we create a gradient,
 
-                for (j of rooms[i].lights) { // we get all the lights in the room,
+                for (j of rooms[i].lights) { // get all the lights in the room,
                     const lightInfo = await hue.lighting.lightSearch(lights, j); // search for the light,
 
                     if (lightInfo.state.xy != undefined) { // and if it has color,
                         // we calculate the actual color,
                         const rgb = colorConverter.xyBriToRgb(lightInfo.state.xy[0], lightInfo.state.xy[1], lightInfo.state.bri);
     
-                        // and push it to an array.
-                        rgbArr.push([rgb.r, rgb.g, rgb.b]);
-                    } else { // and if it doesn't have color,
+                        // and push it to the gradient.
+                        linearStr += "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + "),";
+                    } else { // And if it doesn't have color,
                         // we set the color to white,
                         let rgb = colorConverter.xyBriToRgb(0.35, 0.35, lightInfo.state.bri);
     
-                        // and push it to an array.
-                        rgbArr.push([rgb.r, rgb.g, rgb.b]);
+                        // and push it to the gradient.
+                        linearStr += "rgb(" + rgb.r + "," + rgb.g + "," + rgb.b + "),";
                     }
-                }
-
-                // Then, we make a gradient of all the colors in the array,
-                let linearStr = "linear-gradient(90deg,";
-                
-                // and for all of them, we add a color to the gradient.
-                for (i of rgbArr) {
-                    linearStr += "rgb(" + i[0] + "," + i[1] + "," + i[2] + "),";
                 }
 
                 linearStr = linearStr.substring(0, linearStr.length - 1); // We remove the last comma,
