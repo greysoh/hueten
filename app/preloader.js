@@ -3,11 +3,11 @@ const titlebar = require("./main/titlebar");
 const setup = require("./pages/setup.js");
 const mainui = require("./pages/mainui.js");
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function loadPage(page) {
+/**
+ * Loads a page
+ * @param {string} page Page path (in app/pages/)
+ */
+function loadPage(page) {
     const path = require("path");
     const fs = require("fs");
 
@@ -27,7 +27,12 @@ async function loadPage(page) {
     }
 }
 
-async function reloadHTMLJS(htmlPath, jsPath) {
+/**
+ * Reloads and loads page specified
+ * @param {string} htmlPath Page path (in app/pages/)
+ * @param {string} jsPath JavaScript path (in app/pages/)
+ */
+function reloadHTMLJS(htmlPath, jsPath) {
     localStorage.setItem("TEMP_jsPath", "./pages/" + jsPath);
     localStorage.setItem("TEMP_htmlPath", htmlPath);
     window.location.reload();
@@ -39,7 +44,7 @@ async function reloadHTMLJS(htmlPath, jsPath) {
  * @param {string} buttonPic Picture URL of the button
  * @param {function} buttonFunction Function to be called when the button is clicked
  */
-async function addTitlebarButton(buttonID, buttonPic, buttonFunction) {
+function addTitlebarButton(buttonID, buttonPic, buttonFunction) {
     // Create button element
     let button = document.createElement("div");
     button.className = "button";
@@ -65,34 +70,46 @@ async function addTitlebarButton(buttonID, buttonPic, buttonFunction) {
 contextBridge.exposeInMainWorld("loadHTML", loadPage);
 contextBridge.exposeInMainWorld("reloadHTMLJS", reloadHTMLJS);
 
+// When the DOM loads,
 addEventListener("DOMContentLoaded", async function() {
+    // we load the titlebar JS,
     titlebar();
 
+    // check if the application is set up,
     if (localStorage.getItem("bridgeUrl") == null || localStorage.getItem("username") == null) {
+        // and if it isn't, we load the setup page.
         document.title = "Hueten Setup";
+        // Including setting the window size to about 720p.
         ipcRenderer.send("setWindowSize", 1200, 720);
-        await loadPage("setup.html");
+        loadPage("setup.html");
 
+        // We also load the setup JS.
         try {
             setup(reloadHTMLJS, addTitlebarButton);
         } catch(e) {
             ipcRenderer.send("ready");
             alert("Setup failed.");
         }
-    } else if (localStorage.getItem("TEMP_htmlPath") != null) {
+    } else if (localStorage.getItem("TEMP_htmlPath") != null) { // and if it is, we check if we need to load custom HTML and JS
+        // If we do, we set the title to be Hueten.
         document.title = "Hueten";
         
-        await loadPage(localStorage.getItem("TEMP_htmlPath"));
-        
+        // We load the page specified in localStorage, 
+        loadPage(localStorage.getItem("TEMP_htmlPath"));
+        // and save the JS function into a variable.
         const js = require(localStorage.getItem("TEMP_jsPath"));
 
+        // We remove those items, 
         localStorage.removeItem("TEMP_htmlPath");
         localStorage.removeItem("TEMP_jsPath");
 
+        // and call the JS function.
         js(reloadHTMLJS, addTitlebarButton);
-    } else {
-        await loadPage("mainui.html");
+    } else { // else, we load the Main UI.
+        // We set the page to be the Main UI,
+        loadPage("mainui.html");
 
+        // and load the main UI JS.
         try {
             mainui(reloadHTMLJS, addTitlebarButton);
         } catch (e) {
