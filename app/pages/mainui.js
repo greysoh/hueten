@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { join } = require("path");
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, contextBridge } = require("electron");
 
 const HueAPI = require("../../hue.api");
 const hue = new HueAPI("Hueten");
@@ -16,10 +16,18 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-module.exports = async function() {
+module.exports = async function(reloadHTMLJS, addControlButton) {
+    if (localStorage.getItem("timeWait") == null) {
+        localStorage.setItem("timeWait", "1000");
+    }
+    
     hue.connection.setBridgeURL(localStorage.getItem("bridgeUrl"));
     hue.auth.setUsername(localStorage.getItem("username"));
 
+    addControlButton("settingsButton", "assets/settings.png", function() {
+        reloadHTMLJS("settings.html", "settings.js");
+    })
+    
     while (true) {
         let rooms = await hue.lighting.getGroups();
 
@@ -144,6 +152,6 @@ module.exports = async function() {
             ipcRenderer.send("ready");
         }
 
-        await sleep(1000);
+        await sleep(parseInt(localStorage.getItem("timeWait")));
     }
 }
