@@ -144,22 +144,32 @@ module.exports = async function(reloadHTMLJS, addControlButton) {
                 template = template.replaceAll("{{backgroundColor}}", linearStr);
             }
 
+            // We add the template to the new HTML.
             newHTML += template;
 
+            // We add the template to the new elements array.
             let elem = document.createElement("div");
             elem.innerHTML = template;
 
+            // We push the template to the new elements array.
             newElements.push(elem);
+
+            // We increment the room id.
             roomID++;
         }
 
+        // We set the new HTML, once done with the loop.
         roomList.innerHTML = newHTML;
-
+    
+        // If we are not ready,
         if (!isReady) {
+            // we set the ready variable to true,
             isReady = true;
+            // and get the main process to show the window.
             ipcRenderer.send("ready");
         }
 
+        // Finally, we sleep to whatever the user has set the refresh rate to. The default is 1000ms/1 second.
         await sleep(parseInt(localStorage.getItem("timeWait")));
     }
 }
