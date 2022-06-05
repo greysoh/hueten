@@ -17,29 +17,42 @@ function sleep(ms) {
 }
 
 module.exports = async function(reloadHTMLJS, addControlButton) {
+    // if the time waiting is not set,
     if (localStorage.getItem("timeWait") == null) {
+        // we set it to 1000ms/1sec
         localStorage.setItem("timeWait", "1000");
     }
     
+    // We connect the hue API to our credentials, and the username.
     hue.connection.setBridgeURL(localStorage.getItem("bridgeUrl"));
     hue.auth.setUsername(localStorage.getItem("username"));
 
+    // We add a button to the control bar, which goes to the settings page on click.
     addControlButton("settingsButton", "assets/settings.png", function() {
         reloadHTMLJS("settings.html", "settings.js");
     })
     
     while (true) {
+        // We get the hue groups,
         let rooms = await hue.lighting.getGroups();
 
+        // the room list,
         let roomList = document.getElementById("rooms");
-        let newHTML = "";
+        
+        let newHTML = ""; // and set the current HTML to an empty string. This will get set later.
+        let roomID = 0; // We set the room ID to 0, which is the first room.
 
-        let roomID = 0;
+        // TODO: Update the groups manually, instead of running getGroups() again, which is inefficient.]
+        // Hopefully before 1.0?
 
         // 1st Pass - Detect old rooms and apply values changed
+
+        // If the room list is not empty,
         if (document.getElementById("rooms").innerHTML != "") {
             let iterateCount = 0; // Fix to not cause mass chaos - sorry dad
-            for (i of roomList.getElementsByClassName("hellopersonreadingthis")) {
+            for (i of roomList.getElementsByClassName("hellopersonreadingthis")) { // we do a for loop on the room list.
+                // TODO: Change the comments to match the new style used below.
+
                 let roomActions = {};
 
                 let id = i.id; // Room ID - Sequential order of array elements
