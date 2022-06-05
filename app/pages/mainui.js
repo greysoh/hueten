@@ -82,7 +82,7 @@ module.exports = async function(reloadHTMLJS, addControlButton) {
 
             let template = roomTemplate;
             
-            // Filling in template
+            // Filling in template (2.55 is the conversion factor for brightness from 0-255 to percentage)
             template = template.replaceAll("{{name}}", rooms[i].name);
             template = template.replaceAll("{{brightness}}", rooms[i].action.bri / 2.55);
             template = template.replaceAll("{{roomID}}", "hi_" + i);
@@ -91,9 +91,18 @@ module.exports = async function(reloadHTMLJS, addControlButton) {
             if (rooms[i].action.on) template = template.replaceAll("{{checked}}", "checked"); // If the room is on, we check the checkbox
             template = template.replaceAll("{{checked}}", ""); // else, we uncheck it
             
+            // Magic numbers: 
+            // 70 is the length of the room applets
+            // 5 is the spacing between them, idk why I have to do them like that
+
             template = template.replaceAll("{{weDidTheMonsterMath}}", 70 * roomID + (5 * roomID) + 5); // Some math that CSS was too stupid to do
 
             // Calculate light gradient
+
+            // Magic numbers:
+            // 0.35 is the X and Y coordinates for the weird standard philips uses
+            // This is the form of white we want to use
+
             if (rooms[i].lights.length == 1) { // If there is only 1 light in the room,
                 if (rooms[i].action.xy != undefined) { // and the room has a color,
                     // we calculate the actual color,
