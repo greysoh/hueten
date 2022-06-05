@@ -38,6 +38,10 @@ module.exports = async function() {
         let input = document.createElement("input");
         input.type = "text";
 
+        // and a span element,
+        let span = document.createElement("span");
+        span.innerText = "Bridge URL: ";
+
         // add an event listener to the input element,
         input.addEventListener("keypress", function(e) {
             // and if the key is enter,
@@ -49,8 +53,9 @@ module.exports = async function() {
             }
         })
 
-        // We add the input element to the body,
+        // We add the input and span element to the body,
         document.getElementsByClassName("text")[0].innerHTML = "";
+        document.getElementsByClassName("text")[0].appendChild(span);
         document.getElementsByClassName("text")[0].appendChild(input);
 
         // and wait for the variable to be unset (triggers when user presses enter in the element)

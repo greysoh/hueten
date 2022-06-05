@@ -111,7 +111,7 @@ module.exports = async function(reloadHTMLJS, addControlButton) {
             } else { // If there is more than 1 light in the room,
                 let linearStr = "linear-gradient(90deg,"; // we create a gradient,
 
-                for (j of rooms[i].lights) { // get all the lights in the room,
+                for (j of rooms[i].lights) { // iterate over all the lights in the room,
                     const lightInfo = await hue.lighting.lightSearch(lights, j); // search for the light,
 
                     if (lightInfo.state.xy != undefined) { // and if it has color,
@@ -129,8 +129,7 @@ module.exports = async function(reloadHTMLJS, addControlButton) {
                     }
                 }
 
-                linearStr = linearStr.substring(0, linearStr.length - 1); // We remove the last comma,
-                linearStr += ")"; // and close the gradient.
+                linearStr = linearStr.substring(0, linearStr.length - 1) + ")"; // We remove the last comma, and close the gradient.
 
                 // Then, we set the background color.
                 template = template.replaceAll("{{backgroundColor}}", linearStr);
