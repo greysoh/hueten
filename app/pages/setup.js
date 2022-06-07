@@ -3,8 +3,23 @@ const hue = new HueAPI("Hueten");
 const { contextBridge, ipcRenderer } = require("electron");
 let isBridgeURLOverwritten = false;
 
+const axios = require('axios');
+
 const package = require("../../package.json");
 const buildVer = package.version;
+
+async function isAlive(ip) {
+    try {
+        await axios({
+            method: "get",
+            url: ip,
+            timeout: 20000
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 document.addEventListener("keypress", function(e) {
     if (e.key.toLowerCase() == "e") {
@@ -17,6 +32,10 @@ function sleep(ms) {
 }
 
 module.exports = async function() {
+    if (!await isAlive("https://discovery.meethue.com")) {
+        ipcRenderer.send("failure", "Fatal", "Could not connect to Discovery service", true);
+    }
+
     // Add the build version to the image attribution
     document.getElementsByClassName("attrib")[0].innerHTML = `v${buildVer} | Alpha | ` + document.getElementsByClassName("attrib")[0].innerHTML; 
     ipcRenderer.send("ready"); // Make the window show up, since we're ready

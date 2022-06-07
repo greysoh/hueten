@@ -40,14 +40,19 @@ const createWindow = () => {
   
   ipcMain.on("failure", (event, title, message, shouldClose) => {
     const failLogger = log4js.getLogger("FailHandler");
+
+    if (process.env.LOG_LEVEL) {
+      failLogger.level = process.env.LOG_LEVEL;
+    }    
+
     dialog.showErrorBox(title, message);
 
     if (shouldClose) {
-      logger.fatal(message);
+      failLogger.fatal(message);
       app.quit();
+    } else {
+      failLogger.error(message);
     }
-
-    logger.error(message);
   })
 
   ipcMain.on("minimize", function () {

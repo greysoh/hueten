@@ -22,7 +22,7 @@ async function isAlive(ip) {
     try {
         await axios({
             method: "get",
-            url: `${ip}/api/0/config`,
+            url: ip,
             timeout: 2000
         });
         return true;
@@ -34,7 +34,7 @@ async function isAlive(ip) {
 module.exports = async function(reloadHTMLJS, addControlButton) {
     // Check to see if the bridge is alive.
 
-    if (!await isAlive(localStorage.getItem("bridgeUrl"))) {
+    if (!await isAlive(localStorage.getItem("bridgeUrl") + "/api/0/config")) {
         ipcRenderer.send("failure", "Fatal", "Could not connect to bridge", true);
     }
     
