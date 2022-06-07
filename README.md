@@ -1,5 +1,5 @@
 # Hueten
-Will be public at 1.0.0.  
+Please don't use this yet, I may accidentally cause your lights to go nuclear like I did once.  
 ## About
 Hueten is a cross-platform (hopefully) desktop app to control your Hue smart lights.  
 ## Installation
