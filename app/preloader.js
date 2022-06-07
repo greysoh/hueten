@@ -1,7 +1,15 @@
 const { contextBridge, ipcRenderer } = require("electron");
+const log4js = require("log4js"); 
+
 const titlebar = require("./main/titlebar");
 const setup = require("./pages/setup.js");
 const mainui = require("./pages/mainui.js");
+
+const logger = log4js.getLogger("ElectronUILoader");
+
+if (process.env.LOG_LEVEL) {
+    logger.level = process.env.LOG_LEVEL;
+}
 
 /**
  * Loads a page
@@ -74,9 +82,12 @@ contextBridge.exposeInMainWorld("reloadHTMLJS", reloadHTMLJS);
 addEventListener("DOMContentLoaded", async function() {
     // we load the titlebar JS,
     titlebar();
+    logger.info("Titlebar loaded");
 
     // check if the application is set up,
     if (localStorage.getItem("bridgeUrl") == null || localStorage.getItem("username") == null) {
+        logger.debug("Application not set up, loading setup UI");
+
         // and if it isn't, we load the setup page.
         document.title = "Hueten Setup";
         // Including setting the window size to about 720p.
@@ -90,6 +101,7 @@ addEventListener("DOMContentLoaded", async function() {
             ipcRenderer.send("failure", "Fatal", "Failed to load setup screen", true);
         }
     } else if (localStorage.getItem("TEMP_htmlPath") != null) { // and if it is, we check if we need to load custom HTML and JS
+        logger.debug("Loading custom HTML and JS");
         // If we do, we set the title to be Hueten.
         document.title = "Hueten";
         
@@ -105,6 +117,7 @@ addEventListener("DOMContentLoaded", async function() {
         // and call the JS function.
         js(reloadHTMLJS, addTitlebarButton);
     } else { // else, we load the Main UI.
+        logger.debug("Just a normal load :)");
         // We set the page to be the Main UI,
         loadPage("mainui.html");
 

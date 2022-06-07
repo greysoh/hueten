@@ -1,8 +1,17 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { join } = require("path");
+const log4js = require("log4js");
+
+const logger = log4js.getLogger("UILoader");
+
+if (process.env.LOG_LEVEL) {
+  logger.level = process.env.LOG_LEVEL;
+}
 
 // We create a window initialization function,
 const createWindow = () => {
+  // Log that we are creating the window.
+  logger.info("Creating window");
   // create the new window,
   const win = new BrowserWindow({
     width: 300,
@@ -21,19 +30,24 @@ const createWindow = () => {
 
   // and answer to lots of requests.
   ipcMain.on("setWindowSize", (event, width, height) => {
-      win.setSize(width, height);
+    win.setSize(width, height);
   });
 
   ipcMain.on("ready", function () {
+    logger.info("Window is ready");
     win.show();
   });
   
   ipcMain.on("failure", (event, title, message, shouldClose) => {
+    const failLogger = log4js.getLogger("FailHandler");
     dialog.showErrorBox(title, message);
 
     if (shouldClose) {
+      logger.fatal(message);
       app.quit();
     }
+
+    logger.error(message);
   })
 
   ipcMain.on("minimize", function () {
@@ -71,5 +85,10 @@ app.on("window-all-closed", () =>{
 
 // When the app is ready, we create the window.
 app.whenReady().then(() => {
+  const app = require("./package.json");
+
+  logger.info("Version " + app.version)
+  logger.info("App is starting");
+
   createWindow();
 });
