@@ -11,3 +11,14 @@ Then, start the app.
 ```bash
 $ npm start
 ```
+## Loading in debug
+Set the log level you want (info, debug, warn, error, fatal) as an env variable with the name of LOG_LEVEL.  
+On powershell:
+```powershell
+$env:LOG_LEVEL = "debug"
+npm start
+```
+On posix-compliant shells:
+```bash
+LOG_LEVEL=debug npm start
+```
