@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const { join } = require("path");
 
 // We create a window initialization function,
@@ -27,6 +27,14 @@ const createWindow = () => {
   ipcMain.on("ready", function () {
     win.show();
   });
+  
+  ipcMain.on("failure", (event, title, message, shouldClose) => {
+    dialog.showErrorBox(title, message);
+
+    if (shouldClose) {
+      app.quit();
+    }
+  })
 
   ipcMain.on("minimize", function () {
     win.minimize();

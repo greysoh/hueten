@@ -2,6 +2,8 @@ const fs = require("fs");
 const { join } = require("path");
 const { ipcRenderer, contextBridge } = require("electron");
 
+const axios = require("axios");
+
 const HueAPI = require("../../hue.api");
 const hue = new HueAPI("Hueten");
 
@@ -16,8 +18,27 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function isAlive(ip) {
+    try {
+        await axios({
+            method: "get",
+            url: `${ip}/api/0/config`,
+            timeout: 2000
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 module.exports = async function(reloadHTMLJS, addControlButton) {
-    // if the time waiting is not set,
+    // Check to see if the bridge is alive.
+
+    if (!await isAlive(localStorage.getItem("bridgeUrl"))) {
+        ipcRenderer.send("failure", "Fatal", "Could not connect to bridge", true);
+    }
+    
+    // If the time waiting is not set,
     if (localStorage.getItem("timeWait") == null) {
         // we set it to 1000ms/1sec
         localStorage.setItem("timeWait", "1000");

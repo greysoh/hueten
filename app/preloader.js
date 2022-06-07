@@ -87,8 +87,7 @@ addEventListener("DOMContentLoaded", async function() {
         try {
             setup(reloadHTMLJS, addTitlebarButton);
         } catch(e) {
-            ipcRenderer.send("ready");
-            alert("Setup failed.");
+            ipcRenderer.send("failure", "Fatal", "Failed to load setup screen", true);
         }
     } else if (localStorage.getItem("TEMP_htmlPath") != null) { // and if it is, we check if we need to load custom HTML and JS
         // If we do, we set the title to be Hueten.
@@ -113,8 +112,7 @@ addEventListener("DOMContentLoaded", async function() {
         try {
             mainui(reloadHTMLJS, addTitlebarButton);
         } catch (e) {
-            ipcRenderer.send("ready");
-            alert("MainUI Failed");
+            ipcRenderer.send("failure", "Fatal", "Failed to load the user interface", true);
         }
     }
 })
