@@ -45,13 +45,13 @@ const createWindow = () => {
       failLogger.level = process.env.LOG_LEVEL;
     }    
 
-    dialog.showErrorBox(title, message);
-
     if (shouldClose) {
       failLogger.fatal(message);
+      dialog.showErrorBox(title, message);
       app.quit();
     } else {
       failLogger.error(message);
+      dialog.showErrorBox(title, message);
     }
   })
 
