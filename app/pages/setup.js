@@ -10,12 +10,17 @@ const buildVer = package.version;
 
 async function isAlive(ip) {
     try {
-        await axios({
+        let data = await axios({
             method: "get",
             url: ip,
             timeout: 20000
         });
-        return true;
+
+        if (data.data == undefined) {
+            return false;
+        } else {
+            return true;
+        }
     } catch (e) {
         return false;
     }
@@ -32,6 +37,7 @@ function sleep(ms) {
 }
 
 module.exports = async function() {
+    console.log(await isAlive("https://discovery.meethue.com"))
     if (!await isAlive("https://discovery.meethue.com")) {
         ipcRenderer.send("failure", "Fatal", "Could not connect to Discovery service", true);
     }

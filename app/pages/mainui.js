@@ -20,12 +20,17 @@ function sleep(ms) {
 
 async function isAlive(ip) {
     try {
-        await axios({
+        let data = await axios({
             method: "get",
             url: ip,
-            timeout: 2000
+            timeout: 20000
         });
-        return true;
+
+        if (data.data == undefined) {
+            return false;
+        } else {
+            return true;
+        }
     } catch (e) {
         return false;
     }
